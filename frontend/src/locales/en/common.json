@@ -1,0 +1,18 @@
+{
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "emailLabel": "Email Address",
+  "passwordLabel": "Password",
+  "confirmPasswordLabel": "Confirm Password",
+  "Check your email": "Check your email",
+  "Please check your password": "Please check your password",
+  "Please make sure your passwords match": "Please make sure your passwords match",
+  "Check your name": "Check your name",
+  "Application name": "PW Application",
+  "Logout": "Logout",
+  "sumLabel": "Sum",
+  "add": "New transaction",
+  "users": "Users",
+  "Make a transaction": "Make a transaction",
+  "brand": "PW wallets"
+}

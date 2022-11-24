@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatetAt DateTime @updatedAt
+
+  name     String
+  email    String  @unique
+  hash     String
+  hashedRt String?
+
+  senders   Transaction[] @relation("senders")
+  receivers Transaction[] @relation("receivers")
+  Wallet    Wallet[]
+
+  @@map("users")
+}
+
+model Wallet {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime     @default(now())
+  updatetAt   DateTime     @updatedAt
+  amountMajor Int
+  amountMinor Int
+  currency    CurrencyEnum @default(value: PW)
+  user        User         @relation(fields: [userId], references: [id])
+  userId      String       @db.ObjectId
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime     @default(now())
+  updatetAt   DateTime     @updatedAt
+  amountMajor Int
+  amountMinor Int
+  currency    CurrencyEnum @default(value: PW)
+  sender      User?        @relation("senders", fields: [senderId], references: [id])
+  senderId    String       @db.ObjectId
+  receiver    User?        @relation("receivers", fields: [receiverId], references: [id])
+  receiverId  String       @db.ObjectId
+
+  @@map("transactions")
+}
+
+enum CurrencyEnum {
+  PW
+}
