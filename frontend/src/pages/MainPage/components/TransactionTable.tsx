@@ -4,27 +4,22 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Paper
+  TableRow
 } from '@mui/material';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
-import { UserInterface, TransactionInterface } from '../../../services/MoneyService';
-import { AuthDataInterface } from '../../../services/AuthService';
+import { RootState } from "../../../store";
+import { useAppSelector } from "../../../hooks/redux";
 
 const customColumnStyle = { maxWidth: '30px', backgroundColor: '' };
 
 
-export default function TransactionTable({
-  transactionsState,
-  userInfo,
-  usersState
-}: {
-  transactionsState: TransactionInterface[],
-  userInfo: AuthDataInterface,
-  usersState: UserInterface[]
-}) {
+export default function TransactionTable() {
+  const transactions = useAppSelector((state: RootState) => state.wallet.transactions);
+  const { sub } = useAppSelector((state: RootState) => state.auth.user);
+  const partners = useAppSelector((state: RootState) => state.wallet.partners);
+
   return (
     <TableContainer>
       <Table aria-label="simple table">
@@ -38,15 +33,15 @@ export default function TransactionTable({
         </TableHead>
         <TableBody>
         {
-          transactionsState.map((row:TransactionInterface) => {
-            const DirIcon = row.senderId === userInfo.sub ? ArrowCircleRightIcon : ArrowCircleLeftIcon;
-            const DirColor = row.senderId === userInfo.sub ? 'primary' : 'secondary';
+          transactions.map((row:any) => {
+            const DirIcon = row.senderId === sub ? ArrowCircleRightIcon : ArrowCircleLeftIcon;
+            const DirColor = row.senderId === sub ? 'primary' : 'secondary';
             let user;
 
-            if (row.senderId === userInfo.sub) {
-              user = usersState.find((u:any) => u.id === row.receiverId);
+            if (row.senderId === sub) {
+              user = partners.find((u:any) => u.id === row.receiverId);
             } else {
-              user = usersState.find((u:any) => u.id === row.senderId);
+              user = partners.find((u:any) => u.id === row.senderId);
             }
 
             return (

@@ -1,20 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import { Box, Tab, Tabs, Grid, TextField, Button, Typography } from '@mui/material';
-
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { validateEmail } from '../utils/validations';
-import AuthService from '../services/AuthService';
+import { useAppSelector, useAppDispatch } from "../hooks/redux";
+import { signInAction, signUpAction } from '../store/reducers/auth/actionCreators';
+import { AuthStatesEnum } from '../store/reducers/auth/types';
+import { RootState } from "../store";
 
 enum TabsEnum {
   SignIn,
   SignUp
 }
 
-export default function AuthPage({ authService }: { authService: AuthService}) {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+export default function AuthPage() {
+  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { state } = useAppSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (state === AuthStatesEnum.allowed) navigate('/');
+  }, [state]);
+  
+
   const [currentTab, setCurrenTab] = useState<TabsEnum>(TabsEnum.SignIn);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -25,7 +38,7 @@ export default function AuthPage({ authService }: { authService: AuthService}) {
     setCurrenTab(newTabIndex);
   };
 
-  const handleSubmit = (e:React.ChangeEvent<{}>) => {
+  const handleSubmit = async (e:React.ChangeEvent<{}>) => {
     e.preventDefault();
 
     if (currentTab === TabsEnum.SignUp && !name) {
@@ -45,8 +58,8 @@ export default function AuthPage({ authService }: { authService: AuthService}) {
       return;
     }
 
-    currentTab === TabsEnum.SignUp ? authService.signup({ name, email, password }) : authService.signin({ email, password })
-
+    currentTab === TabsEnum.SignIn && await dispatch(signInAction({ email, password }));
+    currentTab === TabsEnum.SignUp && await dispatch(signUpAction({ name, email, password }));
   }
 
   return (
@@ -79,7 +92,7 @@ export default function AuthPage({ authService }: { authService: AuthService}) {
                     type="text"
                     autoFocus
                     size="small"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 )
             }
@@ -94,7 +107,7 @@ export default function AuthPage({ authService }: { authService: AuthService}) {
               autoComplete="email"
               autoFocus
               size="small"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -106,7 +119,7 @@ export default function AuthPage({ authService }: { authService: AuthService}) {
               id="password"
               autoComplete="current-password"
               size="small"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             {
               currentTab === TabsEnum.SignUp && (
@@ -119,7 +132,7 @@ export default function AuthPage({ authService }: { authService: AuthService}) {
                   type="password"
                   id="confirmPassword"
                   size="small"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
               )
             }
@@ -129,7 +142,7 @@ export default function AuthPage({ authService }: { authService: AuthService}) {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              {t('signIn')}
+              {t(currentTab === TabsEnum.SignIn ? 'signIn' : 'signUp')}
             </Button>
           </Box>
         </Box>
