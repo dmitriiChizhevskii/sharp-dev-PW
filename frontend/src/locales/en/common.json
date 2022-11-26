@@ -10,9 +10,11 @@
   "Check your name": "Check your name",
   "Application name": "PW Application",
   "Logout": "Logout",
+  "nameLabel": "Name",
   "sumLabel": "Sum",
   "add": "New transaction",
   "users": "Users",
   "Make a transaction": "Make a transaction",
-  "brand": "PW wallets"
+  "brand": "PW wallets",
+  "Page not found": "Page not found"
 }

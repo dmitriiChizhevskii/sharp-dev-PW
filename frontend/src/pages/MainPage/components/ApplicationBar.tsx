@@ -9,24 +9,18 @@ import {
   MenuItem
 } from '@mui/material';
 
-interface Props {
-  logout():void
-  amountMajor: number
-  currency: string
-  userName: string
-  email: string
-  setNewTransactionFormOpen(value:boolean):void
-}
+import { RootState } from "../../../store";
+import { useAppSelector, useAppDispatch } from "../../../hooks/redux";
+import { logoutAction, signInAction } from '../../../store/reducers/auth/actionCreators';
 
 export default function ApplicationBar({
-  logout,
-  amountMajor,
-  currency,
-  userName,
-  email,
   setNewTransactionFormOpen
-}: Props) {
+}: { setNewTransactionFormOpen: (p:boolean) => void}) {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
+  const { name, email } = useAppSelector((state: RootState) => state.auth.user);
+  const wallet = useAppSelector((state: RootState) => state.wallet.wallet);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -37,9 +31,9 @@ export default function ApplicationBar({
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     handleClose();
-    logout();
+    dispatch(logoutAction());
   }
 
   return (
@@ -50,9 +44,14 @@ export default function ApplicationBar({
         </Typography>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Typography style={{ paddingRight: 16 }}>
-            {amountMajor} {currency}
-          </Typography>
+          {
+            wallet && (
+              <Typography style={{ paddingRight: 16 }}>
+                {wallet.amountMajor} {wallet.currency}
+              </Typography>
+            )
+          }
+
           
           <Button
             color="info"
@@ -70,7 +69,7 @@ export default function ApplicationBar({
             style={{ color: 'white' }}
           >
             <span>
-              {userName} ({email})
+              {name} ({email})
             </span>
           </Button>
           <Menu

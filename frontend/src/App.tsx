@@ -1,108 +1,75 @@
-import { useEffect, useState } from 'react';
-import { ThemeProvider } from "@mui/material";
+import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
+import { Routes, Route } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
-import CircularProgress from '@mui/material/CircularProgress';
-
+import { ProtectedRoute, Loader } from './components';
+import { useAppSelector, useAppDispatch } from "./hooks/redux";
+import { RootState } from "./store";
 import './App.scss';
-
 import './locales/i18n';
-import { theme } from "./theme";
 
-import MainPage from './pages/MainPage/MainPage';
-import AuthPage from './pages/AuthPage';
+import MainPage from './pages/mainPage';
 
-import HttpService from './services/HttpService';
-import AuthService, { AuthStatesEnum } from './services/AuthService';
-import { AuthDataInterface } from './services/AuthService';
-import MoneyService, { TransactionInterface, UserInterface, WalletInterface } from './services/MoneyService';
+import tokenManager from './utils/tokenResolver';
+import AuthPage from './pages/authPage';
+import { AuthStatesEnum } from './store/reducers/auth/types';
+import { checkAuth } from './store/reducers/auth/actionCreators';
 
+
+axios.defaults.baseURL = process.env.REACT_APP_ENDPOINT;
+axios.defaults.headers.common['Authorization'] = `Bearer ${tokenManager.get('accessToken')}`;
 
 function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [state, setState] = useState<AuthStatesEnum>();
-  const [error, setError] = useState('');
+  const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
-  const [services, setServices] = useState<{[key: string]: any}>({});
-
-
-  const [userInfo, setUserInfo] = useState<AuthDataInterface>();
-  const [walletState, setWalletState] = useState<WalletInterface>();
-  const [usersState, setUsersState] = useState<UserInterface[]>();
-  const [transactionsState, setTransactionsState] = useState<TransactionInterface[]>();
+  const { state } = useAppSelector((state: RootState) => state.auth);
+  const error = useAppSelector((state: RootState) => state.error.errorText);
 
   useEffect(() => {
-    const httpService = new HttpService(process.env.REACT_APP_ENDPOINT, setError);
-    const moneyService = new MoneyService(httpService);
-    const authService = new AuthService(httpService, async (st:AuthStatesEnum) => {
-      if (st === AuthStatesEnum.allowed) {
-        await moneyService.getWallet();
-        await moneyService.getUsers();
-        await moneyService.getTransactions();
-        setState(st);
-
-        setUserInfo(authService.userInfo);
-        setWalletState(moneyService.data);
-        setUsersState(moneyService.users);
-        setTransactionsState(moneyService.transactions);
-
-      } else {
-        setState(st);
-      }
-    });
-
-    authService.checkAuth()
-    
-    setServices({ httpService, authService, moneyService });
+    dispatch(checkAuth());
   }, []);
 
   useEffect(() => {
     if (error) {
       enqueueSnackbar(error, { variant: 'error' });
-      setError('')
+      setTimeout(() => {
+        closeSnackbar();
+      }, 5000)
     }
   }, [error]);
+
+
+  if (state === AuthStatesEnum.pending) {
+    return <Loader />
+  }
   
-
   return (
-    <ThemeProvider theme={theme}>
-        {
-          state === AuthStatesEnum.pending && (
-            <div className='centerIt'>
-              <CircularProgress />
-            </div>
-          )
+    <Routes>
+      <Route
+        path="/auth"
+        element={
+          <AuthPage />
         }
-        {
-          state === AuthStatesEnum.denied && (
-            <AuthPage
-              authService={services.authService}
-            />
-          )
-        }
+      />
 
-        {
-          (
-            state === AuthStatesEnum.allowed
-            && userInfo
-            && walletState
-            && usersState
-            && transactionsState
-          ) && (
-            <MainPage
-              userInfo={userInfo}
-              walletState={walletState}
-              usersState={usersState}
-              transactionsState={transactionsState}
-              logout={() => services.authService.logout()}
-              addTransaction={async (id:string, amount:number) => {
-                const transactions = await services.moneyService.addTransaction(id, amount);
-                setTransactionsState([...transactions]);
-              }}
-            />
-          )
-        }
-    </ThemeProvider>
+      <Route path="/" element={
+        <ProtectedRoute state={state}>
+          <MainPage />
+        </ProtectedRoute>
+       
+      } />
+      <Route path="*" element={
+        <div className='centerIt'>
+          {t('Page not found')}
+        </div>
+      }>
+        
+      </Route>
+    </Routes>
   );
 }
 

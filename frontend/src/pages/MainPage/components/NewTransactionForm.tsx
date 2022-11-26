@@ -12,23 +12,23 @@ import {
   DialogContent,
   DialogTitle
 } from '@mui/material';
-import { SelectChangeEvent } from "@mui/material";
 
-import { UserInterface } from '../../../services/MoneyService';
+import { RootState } from "../../../store";
+import { useAppSelector, useAppDispatch } from "../../../hooks/redux";
+import { addTransactionAction } from '../../../store/reducers/wallet/actionCreators';
 
 export default function NewTransactionForm({
-  addTransaction,
   onClose,
-  open,
-  usersState
+  open
 }: {
-  usersState: UserInterface[]
-  open: boolean
-  addTransaction(id:string, amount:number):void
   onClose():void
+  open: boolean
 }) {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
+  const partners = useAppSelector((state: RootState) => state.wallet.partners);
 
   const handleClose = () => {
     onClose();
@@ -48,7 +48,8 @@ export default function NewTransactionForm({
       enqueueSnackbar(t('Choose correct sum'), { variant: 'error' });
       return;
     }
-    addTransaction(receiverId, amount);
+
+    dispatch(addTransactionAction(receiverId, amount));
     setReceiverId('');
     setAmount(null);
     onClose();
@@ -72,10 +73,10 @@ export default function NewTransactionForm({
             label={t('users')}
             id="demo-simple-select"
             value={receiverId}
-            onChange={(e: SelectChangeEvent<string>) => setReceiverId(e.target.value)}
+            onChange={(e) => setReceiverId(e.target.value)}
           >
             {
-              usersState.map(({id, name, email}: { id: string, name: string, email:string}) => (
+              partners.map(({id, name, email}: { id: string, name: string, email:string}) => (
                 <MenuItem key={id} value={id}>{name} ({email})</MenuItem>
               ))
             }
@@ -89,7 +90,7 @@ export default function NewTransactionForm({
             name="sum"
             type="number"
             size="small"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmount(+e.target.value)}
+            onChange={(e) => setAmount(+e.target.value)}
           />
           <Button
             type="submit"
