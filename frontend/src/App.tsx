@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { Routes, Route } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
 
 import { ProtectedRoute, Loader } from './components';
 import { useAppSelector, useAppDispatch } from "./hooks/redux";
@@ -11,14 +10,9 @@ import './locales/i18n';
 
 import MainPage from './pages/mainPage';
 
-import tokenManager from './utils/tokenResolver';
 import AuthPage from './pages/authPage';
 import { AuthStatesEnum } from './store/reducers/auth/types';
 import { checkAuth } from './store/reducers/auth/actionCreators';
-
-
-axios.defaults.baseURL = process.env.REACT_APP_ENDPOINT;
-axios.defaults.headers.common['Authorization'] = `Bearer ${tokenManager.get('accessToken')}`;
 
 function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
