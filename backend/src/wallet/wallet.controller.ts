@@ -8,7 +8,7 @@ export class WalletController {
 
   @Get('info')
   @HttpCode(HttpStatus.OK)
-  check(@GetCurrentUserId() userId: string): object {
-    return this.walletService.getUserWallete(userId);
+  check(@GetCurrentUserId() userId: string) {
+    return this.walletService.getUserWallet(userId);
   }
 }

@@ -18,8 +18,8 @@ export class TransactionService {
         'Wrong operation. SenderId and receiverId must be different.',
       );
 
-    const senderWallet = await this.walletService.getUserWallete(senderId);
-    const receiverWallet = await this.walletService.getUserWallete(receiverId);
+    const senderWallet = await this.walletService.getUserWallet(senderId);
+    const receiverWallet = await this.walletService.getUserWallet(receiverId);
 
     if (senderWallet.amountMajor < amount)
       throw new ForbiddenException('Wrong operation. Not enough money');

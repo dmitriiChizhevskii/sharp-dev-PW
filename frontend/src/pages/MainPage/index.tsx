@@ -33,7 +33,7 @@ export default function MainPage() {
         open={newTransactionFormOpen}
       />
 
-      <div style={{ paddingTop: 64, width: '100%' }} className="designed">
+      <div style={{ paddingTop: 64, width: '100%', minHeight: '100vh' }} className="designed">
         <TransactionTable />
       </div>
     </Box>

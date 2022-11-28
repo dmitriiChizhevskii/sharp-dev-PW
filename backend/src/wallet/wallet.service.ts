@@ -38,10 +38,17 @@ export class WalletService {
     return updatedWallet;
   }
 
-  async getUserWallete(userId: string): Promise<Wallet> {
+  async getUserWallet(
+    userId: string,
+  ): Promise<Pick<Wallet, 'id' | 'currency' | 'amountMajor'>> {
     const wallet = await this.prisma.wallet.findFirst({
       where: {
         userId,
+      },
+      select: {
+        id: true,
+        currency: true,
+        amountMajor: true,
       },
     });
 
