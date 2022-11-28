@@ -75,7 +75,7 @@ export default function NewTransactionForm({
             onChange={(e) => setReceiverId(e.target.value)}
           >
             {
-              partners.map(({id, name, email}: { id: string, name: string, email:string}) => (
+              partners.map(({id, name, email}) => (
                 <MenuItem key={id} value={id}>{name} ({email})</MenuItem>
               ))
             }

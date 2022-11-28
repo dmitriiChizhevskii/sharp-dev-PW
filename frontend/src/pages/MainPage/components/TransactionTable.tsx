@@ -32,7 +32,7 @@ export default function TransactionTable() {
         </TableHead>
         <TableBody>
         {
-          transactions.map((row:any) => {
+          transactions.map(row => {
             const DirIcon = row.senderId === sub ? ArrowCircleRightIcon : ArrowCircleLeftIcon;
             const DirColor = row.senderId === sub ? 'primary' : 'secondary';
             let user;
