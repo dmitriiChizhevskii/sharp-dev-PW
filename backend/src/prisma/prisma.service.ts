@@ -24,4 +24,16 @@ export class PrismaService
   async onModuleDestroy() {
     await this.$disconnect();
   }
+
+  async cleanDatabase() {
+    if (process.env.NODE_ENV === 'production') return;
+    const models = Reflect.ownKeys(this).filter(
+      (key) =>
+        this[key] &&
+        this[key].deleteMany !== undefined &&
+        key[0] === key[0].toLowerCase(),
+    );
+    console.log(models);
+    return Promise.all(models.map((modelKey) => this[modelKey].deleteMany()));
+  }
 }
