@@ -13,6 +13,11 @@ export class TransactionService {
   ) {}
 
   async add(senderId: string, { receiverId, amount }: newTransactionDto) {
+    if (senderId === receiverId)
+      throw new ForbiddenException(
+        'Wrong operation. SenderId and receiverId must be different.',
+      );
+
     const senderWallet = await this.walletService.getUserWallete(senderId);
     const receiverWallet = await this.walletService.getUserWallete(receiverId);
 
