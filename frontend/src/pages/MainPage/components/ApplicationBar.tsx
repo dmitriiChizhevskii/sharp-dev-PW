@@ -9,7 +9,6 @@ import {
   MenuItem
 } from '@mui/material';
 
-import { RootState } from "../../../store";
 import { useAppSelector, useAppDispatch } from "../../../hooks/redux";
 import { logoutAction, signInAction } from '../../../store/reducers/auth/actionCreators';
 
@@ -19,8 +18,8 @@ export default function ApplicationBar({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { name, email } = useAppSelector((state: RootState) => state.auth.user);
-  const wallet = useAppSelector((state: RootState) => state.wallet.wallet);
+  const { name, email } = useAppSelector(state => state.auth.user);
+  const wallet = useAppSelector(state => state.wallet.wallet);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);

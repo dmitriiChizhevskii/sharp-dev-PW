@@ -9,16 +9,15 @@ import {
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
-import { RootState } from "../../../store";
 import { useAppSelector } from "../../../hooks/redux";
 
 const customColumnStyle = { maxWidth: '30px', backgroundColor: '' };
 
 
 export default function TransactionTable() {
-  const transactions = useAppSelector((state: RootState) => state.wallet.transactions);
-  const { sub } = useAppSelector((state: RootState) => state.auth.user);
-  const partners = useAppSelector((state: RootState) => state.wallet.partners);
+  const transactions = useAppSelector(state => state.wallet.transactions);
+  const { sub } = useAppSelector(state => state.auth.user);
+  const partners = useAppSelector(state => state.wallet.partners);
 
   return (
     <TableContainer>

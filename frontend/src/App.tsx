@@ -6,7 +6,6 @@ import axios from 'axios';
 
 import { ProtectedRoute, Loader } from './components';
 import { useAppSelector, useAppDispatch } from "./hooks/redux";
-import { RootState } from "./store";
 import './App.scss';
 import './locales/i18n';
 
@@ -26,8 +25,8 @@ function App() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { state } = useAppSelector((state: RootState) => state.auth);
-  const error = useAppSelector((state: RootState) => state.error.errorText);
+  const { state } = useAppSelector(state => state.auth);
+  const error = useAppSelector(state => state.error.errorText);
 
   useEffect(() => {
     dispatch(checkAuth());

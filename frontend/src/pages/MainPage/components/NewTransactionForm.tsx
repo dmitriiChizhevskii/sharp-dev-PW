@@ -13,7 +13,6 @@ import {
   DialogTitle
 } from '@mui/material';
 
-import { RootState } from "../../../store";
 import { useAppSelector, useAppDispatch } from "../../../hooks/redux";
 import { addTransactionAction } from '../../../store/reducers/wallet/actionCreators';
 
@@ -28,7 +27,7 @@ export default function NewTransactionForm({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const partners = useAppSelector((state: RootState) => state.wallet.partners);
+  const partners = useAppSelector(state => state.wallet.partners);
 
   const handleClose = () => {
     onClose();
