@@ -53,7 +53,7 @@ export const addTransactionAction = (receiverId: string, amount: number) => asyn
     dispatch(addTransaction(transaction));
   } catch(e: any | AxiosError) {
     if (e.response) {
-      dispatch(setError(`${e.response.status} ${e.response.statusText}`))
+      dispatch(setError(`${e.response.status} ${e.response.data?.message || e.response.statusText}`))
     } else {
       dispatch(setError(`${e.code} ${e.message}`))
     }

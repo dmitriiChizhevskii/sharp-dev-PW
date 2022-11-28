@@ -13,6 +13,7 @@ import MainPage from './pages/mainPage';
 import AuthPage from './pages/authPage';
 import { AuthStatesEnum } from './store/reducers/auth/types';
 import { checkAuth } from './store/reducers/auth/actionCreators';
+import { setError } from './store/reducers/error/reducer';
 
 function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -30,6 +31,7 @@ function App() {
     if (error) {
       enqueueSnackbar(error, { variant: 'error' });
       setTimeout(() => {
+        dispatch(setError(''));
         closeSnackbar();
       }, 5000)
     }
