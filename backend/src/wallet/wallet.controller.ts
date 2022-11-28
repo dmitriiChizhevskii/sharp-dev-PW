@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Post, HttpCode } from '@nestjs/common';
+import { Controller, HttpStatus, Get, HttpCode } from '@nestjs/common';
 import { GetCurrentUserId } from '../common/decorators';
 import { WalletService } from './wallet.service';
 
@@ -6,9 +6,9 @@ import { WalletService } from './wallet.service';
 export class WalletController {
   constructor(private walletService: WalletService) {}
 
-  @Post('info')
+  @Get('info')
   @HttpCode(HttpStatus.OK)
-  check(@GetCurrentUserId() userId: string): object {
-    return this.walletService.getUserWallete(userId);
+  check(@GetCurrentUserId() userId: string) {
+    return this.walletService.getUserWallet(userId);
   }
 }

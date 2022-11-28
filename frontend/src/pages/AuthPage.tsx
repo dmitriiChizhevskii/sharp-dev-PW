@@ -8,7 +8,6 @@ import { validateEmail } from '../utils/validations';
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
 import { signInAction, signUpAction } from '../store/reducers/auth/actionCreators';
 import { AuthStatesEnum } from '../store/reducers/auth/types';
-import { RootState } from "../store";
 
 enum TabsEnum {
   SignIn,
@@ -21,7 +20,7 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { state } = useAppSelector((state: RootState) => state.auth);
+  const { state } = useAppSelector(state => state.auth);
 
   useEffect(() => {
     if (state === AuthStatesEnum.allowed) navigate('/');

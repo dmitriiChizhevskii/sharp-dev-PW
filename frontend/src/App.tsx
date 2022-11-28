@@ -2,32 +2,26 @@ import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { Routes, Route } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
 
 import { ProtectedRoute, Loader } from './components';
 import { useAppSelector, useAppDispatch } from "./hooks/redux";
-import { RootState } from "./store";
 import './App.scss';
 import './locales/i18n';
 
 import MainPage from './pages/mainPage';
 
-import tokenManager from './utils/tokenResolver';
 import AuthPage from './pages/authPage';
 import { AuthStatesEnum } from './store/reducers/auth/types';
 import { checkAuth } from './store/reducers/auth/actionCreators';
-
-
-axios.defaults.baseURL = process.env.REACT_APP_ENDPOINT;
-axios.defaults.headers.common['Authorization'] = `Bearer ${tokenManager.get('accessToken')}`;
+import { setError } from './store/reducers/error/reducer';
 
 function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const { state } = useAppSelector((state: RootState) => state.auth);
-  const error = useAppSelector((state: RootState) => state.error.errorText);
+  const { state } = useAppSelector(state => state.auth);
+  const error = useAppSelector(state => state.error.errorText);
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -37,6 +31,7 @@ function App() {
     if (error) {
       enqueueSnackbar(error, { variant: 'error' });
       setTimeout(() => {
+        dispatch(setError(''));
         closeSnackbar();
       }, 5000)
     }
