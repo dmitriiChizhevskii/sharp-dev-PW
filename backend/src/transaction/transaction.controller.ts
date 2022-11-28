@@ -1,4 +1,11 @@
-import { Controller, HttpStatus, Post, HttpCode, Body } from '@nestjs/common';
+import {
+  Controller,
+  HttpStatus,
+  Get,
+  Post,
+  HttpCode,
+  Body,
+} from '@nestjs/common';
 import { GetCurrentUserId } from '../common/decorators';
 import { TransactionService } from './transaction.service';
 import { newTransactionDto } from './dto';
@@ -13,7 +20,7 @@ export class TransactionController {
     return this.transactionService.add(userId, params);
   }
 
-  @Post('list')
+  @Get('list')
   @HttpCode(HttpStatus.OK)
   list(@GetCurrentUserId() userId: string) {
     return this.transactionService.list(userId);

@@ -6,7 +6,7 @@ import { Wallet, Partner, Transaction } from './types';
 
 export const setWalletAction = () => async (dispatch: AppDispatch) => {
   try {
-    const response = await appAxios.post<Wallet>('wallet/info');
+    const response = await appAxios.get<Wallet>('wallet/info');
     const wallet = response.data;
     dispatch(setWallet(wallet));
   } catch(e: any | AxiosError) {
@@ -20,7 +20,7 @@ export const setWalletAction = () => async (dispatch: AppDispatch) => {
 
 export const setPartnersAction = () => async (dispatch: AppDispatch) => {
   try {
-    const response = await appAxios.post<Partner[]>('user/list');
+    const response = await appAxios.get<Partner[]>('user/list');
     const partners = response.data;
     dispatch(setPartners(partners));
   } catch(e: any | AxiosError) {
@@ -34,7 +34,7 @@ export const setPartnersAction = () => async (dispatch: AppDispatch) => {
 
 export const setTransactionsAction = () => async (dispatch: AppDispatch) => {
   try {
-    const response = await appAxios.post<Transaction[]>('transaction/list');
+    const response = await appAxios.get<Transaction[]>('transaction/list');
     const transactions = response.data;
     dispatch(setTransactions(transactions));
   } catch(e: any | AxiosError) {

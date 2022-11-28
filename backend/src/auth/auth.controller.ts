@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   HttpStatus,
+  Get,
   Post,
   HttpCode,
   UseGuards,
@@ -17,7 +18,7 @@ import { RtGuard } from '../common/guards';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Post('check')
+  @Get('check')
   @HttpCode(HttpStatus.OK)
   check(@GetCurrentUserId() userId: string,): object {
     return this.authService.getUser(userId);
@@ -37,7 +38,7 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
-  @Post('logout')
+  @Get('logout')
   @HttpCode(HttpStatus.OK)
   logout(@GetCurrentUserId() userId: string): Promise<boolean> {
     return this.authService.logout(userId);
@@ -45,7 +46,7 @@ export class AuthController {
 
   @Public()
   @UseGuards(RtGuard)
-  @Post('refresh')
+  @Get('refresh')
   @HttpCode(HttpStatus.OK)
   refresh(
     @GetCurrentUser('refreshToken') refreshToken: string,

@@ -12,7 +12,7 @@ export const checkAuth = () => async (dispatch: AppDispatch) => {
       return;
     }
 
-    const res = await appAxios.post<User>('auth/check', {});
+    const res = await appAxios.get<User>('auth/check');
     dispatch(signIn(res.data));
     tokenResolver.updateRefreshToken(() => dispatch(logout()));
   } catch(e: any | AxiosError) {
@@ -63,7 +63,7 @@ export const signUpAction = (data: Omit<User, 'sub'>) => async (dispatch: AppDis
 
 export const logoutAction = () => async (dispatch: AppDispatch) => {
   try {
-    await await appAxios.post<Tokens>('auth/logout');
+    await await appAxios.get<Tokens>('auth/logout');
     tokenResolver.delete('accessToken');
     tokenResolver.delete('refreshToken');
     dispatch(logout());

@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Post, HttpCode } from '@nestjs/common';
+import { Controller, HttpStatus, Get, HttpCode } from '@nestjs/common';
 import { GetCurrentUserId } from '../common/decorators';
 import { UserService } from './user.service';
 
@@ -6,7 +6,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('list')
+  @Get('list')
   @HttpCode(HttpStatus.OK)
   list(@GetCurrentUserId() userId: string) {
     return this.userService.getList(userId);
